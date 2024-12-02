@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Phones</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <header>
+        <h1>Search Phones</h1>
+    </header>
+
+    <main>
+        <section>
+            <h2>Find Your Perfect Phone</h2>
+            <form id="searchForm">
+                <input type="text" id="searchQuery" placeholder="Enter brand or model">
+                <button type="button" onclick="searchPhones()">Search</button>
+            </form>
+            <div id="loadingSpinner" style="display: none;">Searching...</div>
+            <div id="searchResults"></div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Mobile Phone Store</p>
+    </footer>
+
+    <script>
+        async function searchPhones() {
+            const query = document.getElementById('searchQuery').value.trim();
+            const loadingSpinner = document.getElementById('loadingSpinner');
+            const resultsDiv = document.getElementById('searchResults');
+
+            if (!query) {
+                alert("Please enter a search query.");
+                return;
+            }
+
+            // Show loading spinner and clear previous results
+            loadingSpinner.style.display = "block";
+            resultsDiv.innerHTML = "";
+
+            try {
+                const response = await fetch(`http://localhost/project/api/searchPhones.php?query=${encodeURIComponent(query)}`);
+                const phones = await response.json();
+
+                // Debug the JSON response
+                console.log("API Response:", phones);
+
+                if (phones.error) {
+                    resultsDiv.innerHTML = `<p>${phones.error}</p>`;
+                } else if (phones.length === 0) {
+                    resultsDiv.innerHTML = `<p>No phones found for "${query}".</p>`;
+                } else {
+                    resultsDiv.innerHTML = phones.map(phone => `
+                    <div>
+                        <a href="http://localhost/project/public/phone-details.html?phoneId=${phone.mo_phoneid}">
+                            <h3>${phone.mo_brand} ${phone.mo_model}</h3>
+                        </a>
+                        <p>Price: ${phone.p_price ? phone.p_price + ' ' + phone.p_currency : 'Not Available'}</p>
+                    </div>
+                `).join('');
+            }
+        } catch (error) {
+            console.error("Error fetching phones:", error);
+            resultsDiv.innerHTML = `<p>An error occurred. Please try again later.</p>`;
+        } finally {
+            loadingSpinner.style.display = "none";
+        }
+    }
+    </script>
+</body>
+</html>

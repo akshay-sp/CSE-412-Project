@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Price Comparison</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <header>
+        <h1>Price Comparison</h1>
+    </header>
+
+    <main>
+        <section>
+            <h2>Compare Prices Across Vendors</h2>
+            <form id="priceForm">
+                <input type="text" id="priceQuery" placeholder="Enter phone model">
+                <button type="button" onclick="comparePrices()">Compare</button>
+            </form>
+            <div id="priceResults"></div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Mobile Phone Store</p>
+    </footer>
+
+    <script>
+        async function comparePrices() {
+            const query = document.getElementById('priceQuery').value;
+            const response = await fetch(`../api/getPriceComparison.php?model=${encodeURIComponent(query)}`);
+            const prices = await response.json();
+            const resultsDiv = document.getElementById('priceResults');
+            resultsDiv.innerHTML = prices.map(price => `
+                <div>
+                    <h3>Vendor: ${price.vendorName}</h3>
+                    <p>Price: ${price.currency} ${price.price}</p>
+                    <p>Last Updated: ${price.lastUpdatedDate}</p>
+                </div>
+            `).join('');
+        }
+    </script>
+</body>
+</html>
