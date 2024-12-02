@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Price Comparison</title>
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="../css/style.css">
 </head>
 <body>
     <header>
@@ -12,13 +12,11 @@
     </header>
 
     <main>
-        <section>
-            <h2>Compare Prices Across Vendors</h2>
-            <form id="priceForm">
-                <input type="text" id="priceQuery" placeholder="Enter phone model">
-                <button type="button" onclick="comparePrices()">Compare</button>
-            </form>
-            <div id="priceResults"></div>
+        <section id="comparisonSection">
+            <div id="loadingSpinner">Loading...</div>
+            <div id="phoneDetails"></div>
+            <div id="sameBrandPhones"></div>
+            <div id="similarSpecPhones"></div>
         </section>
     </main>
 
@@ -27,19 +25,117 @@
     </footer>
 
     <script>
-        async function comparePrices() {
-            const query = document.getElementById('priceQuery').value;
-            const response = await fetch(`../api/getPriceComparison.php?model=${encodeURIComponent(query)}`);
-            const prices = await response.json();
-            const resultsDiv = document.getElementById('priceResults');
-            resultsDiv.innerHTML = prices.map(price => `
-                <div>
-                    <h3>Vendor: ${price.vendorName}</h3>
-                    <p>Price: ${price.currency} ${price.price}</p>
-                    <p>Last Updated: ${price.lastUpdatedDate}</p>
-                </div>
-            `).join('');
+        async function fetchPriceComparison() {
+            const params = new URLSearchParams(window.location.search);
+            const phoneId = params.get('phoneId');
+
+            if (!phoneId) {
+                alert("No phoneId provided in URL.");
+                return;
+            }
+
+            const phoneDetailsDiv = document.getElementById('phoneDetails');
+            const sameBrandDiv = document.getElementById('sameBrandPhones');
+            const similarSpecDiv = document.getElementById('similarSpecPhones');
+            const loadingSpinner = document.getElementById('loadingSpinner');
+
+            try {
+                const response = await fetch(`http://localhost/project/api/getPriceComparison.php?phoneId=${encodeURIComponent(phoneId)}`);
+                const data = await response.json();
+
+                console.log("Price Comparison Data:", data);
+
+                if (data.error) {
+                    phoneDetailsDiv.innerHTML = `<p>${data.error}</p>`;
+                } else {
+                    // Display the selected phone details with price and currency
+                    const phone = data.phone;
+                    phoneDetailsDiv.innerHTML = `
+                        <h2>${phone.mo_brand} ${phone.mo_model}</h2>
+                        <ul>
+                            <li><strong>RAM:</strong> ${phone.s_ram || 'N/A'}</li>
+                            <li><strong>Storage:</strong> ${phone.s_storage || 'N/A'}</li>
+                            <li><strong>Battery:</strong> ${phone.s_battery || 'N/A'}</li>
+                            <li><strong>Display:</strong> ${phone.s_display || 'N/A'}</li>
+                            <li><strong>Price:</strong> ${phone.p_price || 'N/A'} ${phone.p_currency || 'N/A'}</li>
+                            <li><strong>Vendor:</strong> ${phone.v_name || 'N/A'} (${phone.v_avgrating || 'No rating'} stars)</li>
+                        </ul>
+                    `;
+
+                    // Display same-brand phones
+                    if (data.sameBrandPhones.length > 0) {
+                        sameBrandDiv.innerHTML = `
+                            <h2>Phones From the Same Brand</h2>
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Model</th>
+                                        <th>Vendor</th>
+                                        <th>Rating</th>
+                                        <th>Price</th>
+                                        <th>Currency</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${data.sameBrandPhones.map(phone => `
+                                        <tr>
+                                            <td><a href="phone-details.html?phoneId=${phone.mo_phoneId}">${phone.mo_model}</a></td>
+                                            <td>${phone.v_name}</td>
+                                            <td>${phone.v_avgrating}</td>
+                                            <td>${phone.p_price}</td>
+                                            <td>${phone.p_currency}</td>
+                                        </tr>
+                                    `).join('')}
+                                </tbody>
+                            </table>
+                        `;
+                    } else {
+                        sameBrandDiv.innerHTML = `<p>No other phones found from the same brand.</p>`;
+                    }
+
+                    // Display phones with similar specifications
+                    if (data.similarSpecPhones.length > 0) {
+                        similarSpecDiv.innerHTML = `
+                            <h2>Phones with Similar Specifications</h2>
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Brand</th>
+                                        <th>Model</th>
+                                        <th>Vendor</th>
+                                        <th>Rating</th>
+                                        <th>Price</th>
+                                        <th>Currency</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${data.similarSpecPhones.map(phone => `
+                                        <tr>
+                                            <td>${phone.mo_brand}</td>
+                                            <td><a href="phone-details.html?phoneId=${phone.mo_phoneId}">${phone.mo_model}</a></td>
+                                            <td>${phone.v_name}</td>
+                                            <td>${phone.v_avgrating}</td>
+                                            <td>${phone.p_price}</td>
+                                            <td>${phone.p_currency}</td>
+                                        </tr>
+                                    `).join('')}
+                                </tbody>
+                            </table>
+                        `;
+                    } else {
+                        similarSpecDiv.innerHTML = `<p>No phones with similar specifications found.</p>`;
+                    }
+                }
+            } catch (error) {
+                console.error("Error fetching price comparison:", error);
+                phoneDetailsDiv.innerHTML = `<p>An error occurred. Please try again later.</p>`;
+            } finally {
+                loadingSpinner.style.display = "none";
+            }
         }
+
+        // Fetch comparison details on page load
+        fetchPriceComparison();
     </script>
 </body>
 </html>

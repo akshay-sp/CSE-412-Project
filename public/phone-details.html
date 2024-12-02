@@ -20,50 +20,68 @@
 
     <script>
         async function fetchPhoneDetails() {
-        const params = new URLSearchParams(window.location.search);
-        const phoneId = params.get('phoneId'); // Extract phoneId from the query string
+            const params = new URLSearchParams(window.location.search);
+            const phoneId = params.get('phoneId');
 
-        if (!phoneId) {
-            alert("No phoneId provided in URL.");
-            return;
-        }
-
-        console.log("Fetched phoneId:", phoneId); // Debug: Log the phoneId
-
-        const phoneDetailsDiv = document.getElementById('phoneDetails');
-        const loadingSpinner = document.getElementById('loadingSpinner');
-
-        try {
-            const response = await fetch(`http://localhost/project/api/getPhoneDetails.php?phoneId=${encodeURIComponent(phoneId)}`);
-            const phoneDetails = await response.json();
-
-            console.log("Phone Details Response:", phoneDetails); // Debug: Log API response
-
-            if (phoneDetails.error) {
-                phoneDetailsDiv.innerHTML = `<p>${phoneDetails.error}</p>`;
-            } else {
-                // Render phone details
-                phoneDetailsDiv.innerHTML = `
-                    <h2>${phoneDetails.mo_brand} ${phoneDetails.mo_model}</h2>
-                    <h3>Specifications:</h3>
-                    <ul>
-                        <li>RAM: ${phoneDetails.specifications.s_ram || 'N/A'}</li>
-                        <li>Storage: ${phoneDetails.specifications.s_storage || 'N/A'}</li>
-                        <li>Battery: ${phoneDetails.specifications.s_battery || 'N/A'}</li>
-                        <li>Display: ${phoneDetails.specifications.s_display || 'N/A'}</li>
-                    </ul>
-                `;
+            if (!phoneId) {
+                alert("Invalid.");
+                return;
             }
-        } catch (error) {
-            console.error("Error fetching phone details:", error);
-            phoneDetailsDiv.innerHTML = `<p>An error occurred. Please try again later.</p>`;
-        } finally {
-            loadingSpinner.style.display = "none";
-        }
-    }
 
-    // Fetch phone details on page load
-    fetchPhoneDetails();
+            const phoneDetailsDiv = document.getElementById('phoneDetails');
+            const loadingSpinner = document.getElementById('loadingSpinner');
+
+            try {
+                const response = await fetch(`http://localhost/project/api/getPhoneDetails.php?phoneId=${encodeURIComponent(phoneId)}`);
+                const phoneDetails = await response.json();
+
+                console.log("Phone Details Response:", phoneDetails);
+
+                if (phoneDetails.error) {
+                    phoneDetailsDiv.innerHTML = `<p>${phoneDetails.error}</p>`;
+                } else {              
+                    phoneDetailsDiv.innerHTML = `
+                        <h2>${phoneDetails.mo_brand} ${phoneDetails.mo_model}</h2>
+                        <h3>Specifications:</h3>
+                        <ul>
+                            <li>RAM: ${phoneDetails.specifications.s_ram || 'N/A'}</li>
+                            <li>Storage: ${phoneDetails.specifications.s_storage || 'N/A'}</li>
+                            <li>Battery: ${phoneDetails.specifications.s_battery || 'N/A'}</li>
+                            <li>Display: ${phoneDetails.specifications.s_display || 'N/A'}</li>
+                        </ul>
+                        <h3>Vendor Details:</h3>
+                        <div id="vendorList"></div>
+                        <button onclick="redirectToPriceComparison(${phoneId})">Compare Prices</button>
+                    `;
+
+                    // Render vendor information
+                    const vendorListDiv = document.getElementById('vendorList');
+                    if (phoneDetails.vendors && phoneDetails.vendors.length > 0) {
+                        vendorListDiv.innerHTML = phoneDetails.vendors.map(vendor => `
+                            <div>
+                                <p><strong>${vendor.v_name}</strong></p>
+                                <p>Price: ${vendor.p_price} ${vendor.p_currency}</p>
+                                <p>Average Rating: ${vendor.v_avgrating}</p>
+                            </div>
+                        `).join('');
+                    } else {
+                        vendorListDiv.innerHTML = `<p>No vendors available.</p>`;
+                    }
+                }
+            } catch (error) {
+                console.error("Error fetching phone details:", error);
+                phoneDetailsDiv.innerHTML = `<p>An error occurred. Please try again later.</p>`;
+            } finally {
+                loadingSpinner.style.display = "none";
+            }
+        }
+
+        function redirectToPriceComparison(phoneId) {
+            window.location.href = `price-comparison.html?phoneId=${phoneId}`;
+        }
+
+        // Fetch phone details on page load
+        fetchPhoneDetails();
     </script>
 </body>
 </html>

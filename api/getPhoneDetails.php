@@ -31,7 +31,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $stmt->execute(['phoneId' => $phoneId]);
         $specifications = $stmt->fetch(PDO::FETCH_ASSOC);
 
+        // Fetch vendor rating
+        $sql = "SELECT v_name, v_website, v_avgrating, p_price, p_currency 
+        FROM price
+        JOIN vendor ON price.p_priceid = vendor.v_priceid 
+        WHERE p_phoneId = :phoneId";
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute(['phoneId' => $phoneId]);
+        $vendors = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
         $phoneDetails['specifications'] = $specifications;
+        $phoneDetails['vendors'] = $vendors;
 
         echo json_encode($phoneDetails);
     } catch (PDOException $e) {
