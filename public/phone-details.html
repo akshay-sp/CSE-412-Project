@@ -18,13 +18,17 @@
         </section>
     </main>
 
+    <footer>
+        <p>&copy; 2024 Mobile Phone Store</p>
+    </footer>
+
     <script>
         async function fetchPhoneDetails() {
             const params = new URLSearchParams(window.location.search);
             const phoneId = params.get('phoneId');
 
             if (!phoneId) {
-                alert("Invalid.");
+                alert("Invalid phoneId provided.");
                 return;
             }
 
@@ -39,15 +43,16 @@
 
                 if (phoneDetails.error) {
                     phoneDetailsDiv.innerHTML = `<p>${phoneDetails.error}</p>`;
-                } else {              
+                } else {
+                    // Render phone details
                     phoneDetailsDiv.innerHTML = `
                         <h2>${phoneDetails.mo_brand} ${phoneDetails.mo_model}</h2>
                         <h3>Specifications:</h3>
                         <ul>
-                            <li>RAM: ${phoneDetails.specifications.s_ram || 'N/A'}</li>
-                            <li>Storage: ${phoneDetails.specifications.s_storage || 'N/A'}</li>
-                            <li>Battery: ${phoneDetails.specifications.s_battery || 'N/A'}</li>
-                            <li>Display: ${phoneDetails.specifications.s_display || 'N/A'}</li>
+                            <li>RAM: ${phoneDetails.s_ram || 'N/A'}</li>
+                            <li>Storage: ${phoneDetails.s_storage || 'N/A'}</li>
+                            <li>Battery: ${phoneDetails.s_battery || 'N/A'}</li>
+                            <li>Display: ${phoneDetails.s_display || 'N/A'}</li>
                         </ul>
                         <h3>Vendor Details:</h3>
                         <div id="vendorList"></div>
@@ -56,14 +61,14 @@
 
                     // Render vendor information
                     const vendorListDiv = document.getElementById('vendorList');
-                    if (phoneDetails.vendors && phoneDetails.vendors.length > 0) {
-                        vendorListDiv.innerHTML = phoneDetails.vendors.map(vendor => `
+                    if (phoneDetails.v_name) { // Assuming only one vendor per phone in this API
+                        vendorListDiv.innerHTML = `
                             <div>
-                                <p><strong>${vendor.v_name}</strong></p>
-                                <p>Price: ${vendor.p_price} ${vendor.p_currency}</p>
-                                <p>Average Rating: ${vendor.v_avgrating}</p>
+                                <p><strong>${phoneDetails.v_name}</strong></p>
+                                <p>Price: ${phoneDetails.p_price} ${phoneDetails.p_currency}</p>
+                                <p>Average Rating: ${phoneDetails.v_avgrating}</p>
                             </div>
-                        `).join('');
+                        `;
                     } else {
                         vendorListDiv.innerHTML = `<p>No vendors available.</p>`;
                     }

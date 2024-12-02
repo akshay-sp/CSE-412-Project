@@ -79,11 +79,15 @@
                                 <tbody>
                                     ${data.sameBrandPhones.map(phone => `
                                         <tr>
-                                            <td><a href="phone-details.html?phoneId=${phone.mo_phoneId}">${phone.mo_model}</a></td>
-                                            <td>${phone.v_name}</td>
-                                            <td>${phone.v_avgrating}</td>
-                                            <td>${phone.p_price}</td>
-                                            <td>${phone.p_currency}</td>
+                                            <td>
+                                                <a href="phone-details.html?phoneId=${encodeURIComponent(phone.phoneid)}">
+                                                    ${phone.mo_model || 'Unknown Model'}
+                                                </a>
+                                            </td>
+                                            <td>${phone.v_name || 'Unknown'}</td>
+                                            <td>${phone.v_avgrating || 'No rating'}</td>
+                                            <td>${phone.p_price || 'N/A'}</td>
+                                            <td>${phone.p_currency || 'N/A'}</td>
                                         </tr>
                                     `).join('')}
                                 </tbody>
@@ -111,12 +115,16 @@
                                 <tbody>
                                     ${data.similarSpecPhones.map(phone => `
                                         <tr>
-                                            <td>${phone.mo_brand}</td>
-                                            <td><a href="phone-details.html?phoneId=${phone.mo_phoneId}">${phone.mo_model}</a></td>
-                                            <td>${phone.v_name}</td>
-                                            <td>${phone.v_avgrating}</td>
-                                            <td>${phone.p_price}</td>
-                                            <td>${phone.p_currency}</td>
+                                            <td>${phone.mo_brand || 'Unknown Brand'}</td>
+                                            <td>
+                                                <a href="phone-details.html?phoneId=${encodeURIComponent(phone.phoneid)}">
+                                                    ${phone.mo_model || 'Unknown Model'}
+                                                </a>
+                                            </td>
+                                            <td>${phone.v_name || 'Unknown'}</td>
+                                            <td>${phone.v_avgrating || 'No rating'}</td>
+                                            <td>${phone.p_price || 'N/A'}</td>
+                                            <td>${phone.p_currency || 'N/A'}</td>
                                         </tr>
                                     `).join('')}
                                 </tbody>
