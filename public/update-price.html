@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update Phone Price</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>Update Phone Price</h1>
+        </div>
+    </header>
+
+    <nav>
+        <ul class="nav-links">
+            <li><a href="index-admin.html">Home</a></li>
+            <li><a href="search.html">Search Phones</a></li>
+            <li><a href="add-phone.html">Add/Remove Phones</a></li>
+            <li><a href="manage-vendors.html">Manage Vendors</a></li>
+        </ul>
+    </nav>
+
+    <main>
+        <section>
+            <h2>Update Price</h2>
+            <form id="updatePriceForm">
+                <div>
+                    <label for="phoneId">Phone ID:</label>
+                    <input type="number" id="phoneId" required>
+                </div>
+                <div>
+                    <label for="newPrice">New Price:</label>
+                    <input type="number" id="newPrice" required>
+                </div>
+                <div>
+                    <label for="currency">Currency:</label>
+                    <select id="currency" required>
+                        <option value="USD">USD</option>
+                        <option value="EUR">EUR</option>
+                        <option value="INR">INR</option>
+                    </select>
+                </div>
+                <button type="button" onclick="updatePrice()">Update Price</button>
+            </form>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Mobile Phone Store</p>
+    </footer>
+
+    <script>
+        // Update price function (simplified version for this example)
+        function updatePrice() {
+            const phoneId = document.getElementById('phoneId').value.trim();
+            const newPrice = document.getElementById('newPrice').value.trim();
+            const currency = document.getElementById('currency').value.trim();
+
+            // For simplicity, just log the values
+            console.log(`Updating price for phone ID: ${phoneId}, New Price: ${newPrice} ${currency}`);
+
+            // Here, you would typically send this data to a server via AJAX
+            alert('Phone price updated successfully!');
+        }
+    </script>
+</body>
+</html>

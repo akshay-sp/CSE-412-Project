@@ -9,6 +9,10 @@
 <body>
     <header>
         <h1>Search Phones</h1>
+
+        <nav>
+            <a href="index.html">Back to Home</a>
+        </nav>
     </header>
 
     <main>
@@ -16,6 +20,63 @@
             <h2>Find Your Perfect Phone</h2>
             <form id="searchForm">
                 <input type="text" id="searchQuery" placeholder="Enter brand or model">
+
+                <label for="currency">Currency:</label>
+                <select id="currency">
+                    <option value="">All</option>
+                    <option value="USD">USD</option>
+                    <option value="EUR">EUR</option>
+                    <option value="INR">INR</option>
+                </select>
+
+                <label for="ram">RAM:</label>
+                <select id="ram">
+                    <option value="">All</option>
+                    <option value="4">4 GB</option>
+                    <option value="6">6 GB</option>
+                    <option value="8">8 GB</option>
+                    <option value="12">12 GB</option>
+                </select>
+
+                <label for="storage">Storage:</label>
+                <select id="storage">
+                    <option value="">All</option>
+                    <option value="64">64 GB</option>
+                    <option value="128">128 GB</option>
+                    <option value="256">256 GB</option>
+                </select>
+
+                <label for="battery">Battery:</label>
+                <select id="battery">
+                    <option value="">All</option>
+                    <option value="3000">3000 mAh</option>
+                    <option value="4000">4000 mAh</option>
+                    <option value="5000">5000 mAh</option>
+                </select>
+
+                <label for="display">Display Size:</label>
+                <select id="display">
+                    <option value="">All</option>
+                    <option value="5.5">5.5 inch</option>
+                    <option value="6.1">6.1 inch</option>
+                    <option value="6.5">6.5 inch</option>
+                    <option value="7.0">7.0 inch</option>
+                </select>
+
+                <label for="sortBy">Sort by:</label>
+                <select id="sortBy">
+                    <option value="mo_brand">Brand</option>
+                    <option value="mo_model">Model</option>
+                    <option value="p_price">Price</option>
+                    <option value="p_currency">Currency</option>
+                </select>
+
+                <label for="sortOrder">Order:</label>
+                <select id="sortOrder">
+                    <option value="asc">Ascending</option>
+                    <option value="desc">Descending</option>
+                </select>
+
                 <button type="button" onclick="searchPhones()">Search</button>
             </form>
             <div id="loadingSpinner" style="display: none;">Searching...</div>
@@ -30,6 +91,13 @@
     <script>
         async function searchPhones() {
             const query = document.getElementById('searchQuery').value.trim();
+            const currency = document.getElementById('currency').value;
+            const ram = document.getElementById('ram').value;
+            const storage = document.getElementById('storage').value;
+            const battery = document.getElementById('battery').value;
+            const display = document.getElementById('display').value;
+            const sortBy = document.getElementById('sortBy').value;
+            const sortOrder = document.getElementById('sortOrder').value;
             const loadingSpinner = document.getElementById('loadingSpinner');
             const resultsDiv = document.getElementById('searchResults');
 
@@ -38,15 +106,23 @@
                 return;
             }
 
-            // Show loading spinner and clear previous results
             loadingSpinner.style.display = "block";
             resultsDiv.innerHTML = "";
 
             try {
-                const response = await fetch(`http://localhost/project/api/searchPhones.php?query=${encodeURIComponent(query)}`);
+                const url = new URL("http://localhost/project/api/searchPhones.php");
+                url.searchParams.append("query", query);
+                if (currency) url.searchParams.append("currency", currency);
+                if (ram) url.searchParams.append("ram", ram);
+                if (storage) url.searchParams.append("storage", storage);
+                if (battery) url.searchParams.append("battery", battery);
+                if (display) url.searchParams.append("display", display);
+                url.searchParams.append("sortBy", sortBy);
+                url.searchParams.append("sortOrder", sortOrder);
+
+                const response = await fetch(url);
                 const phones = await response.json();
 
-                // Debug the JSON response
                 console.log("API Response:", phones);
 
                 if (phones.error) {
@@ -55,21 +131,22 @@
                     resultsDiv.innerHTML = `<p>No phones found for "${query}".</p>`;
                 } else {
                     resultsDiv.innerHTML = phones.map(phone => `
-                    <div>
-                        <a href="http://localhost/project/public/phone-details.html?phoneId=${phone.mo_phoneid}">
-                            <h3>${phone.mo_brand} ${phone.mo_model}</h3>
-                        </a>
-                        <p>Price: ${phone.p_price ? phone.p_price + ' ' + phone.p_currency : 'Not Available'}</p>
-                    </div>
-                `).join('');
+                        <div>
+                            <a href="http://localhost/project/public/phone-details.html?phoneId=${phone.mo_phoneid}">
+                                <h3>${phone.mo_brand} ${phone.mo_model}</h3>
+                            </a>
+                            <p>Specs: ${phone.s_ram} RAM, ${phone.s_storage} Storage, ${phone.s_battery}, ${phone.s_display}</p>
+                            <p>Price: ${phone.p_price ? phone.p_price + ' ' + phone.p_currency : 'Not Available'}</p>
+                        </div>
+                    `).join('');
+                }
+            } catch (error) {
+                console.error("Error fetching phones:", error);
+                resultsDiv.innerHTML = `<p>An error occurred. Please try again later.</p>`;
+            } finally {
+                loadingSpinner.style.display = "none";
             }
-        } catch (error) {
-            console.error("Error fetching phones:", error);
-            resultsDiv.innerHTML = `<p>An error occurred. Please try again later.</p>`;
-        } finally {
-            loadingSpinner.style.display = "none";
         }
-    }
     </script>
 </body>
 </html>

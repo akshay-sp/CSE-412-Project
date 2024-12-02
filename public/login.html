@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <header>
+        <h1>Login Page</h1>
+    </header>
+
+    <main>
+        <form id="loginForm" onsubmit="return false;">
+            <div>
+                <label for="username">Username:</label>
+                <input type="text" id="username" placeholder="Enter your username" required>
+            </div>
+            <div>
+                <label for="password">Password:</label>
+                <input type="password" id="password" placeholder="Enter your password" required>
+            </div>
+            <button type="button" onclick="handleLogin()">Login</button>
+        </form>
+        <div id="errorMessage" style="color: red; display: none;"></div>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Mobile Phone Store</p>
+    </footer>
+
+    <script>
+        function handleLogin() {
+            // Hardcoded credentials
+            const credentials = {
+                user: { username: "user123", password: "password123", redirect: "index.html" },
+                admin: { username: "admin123", password: "adminpass123", redirect: "index.html" }
+            };
+
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value.trim();
+            const errorMessage = document.getElementById('errorMessage');
+
+            // Clear any previous error message
+            errorMessage.style.display = "none";
+
+            // Validate credentials and set sessionStorage
+            if (username === credentials.user.username && password === credentials.user.password) {
+                sessionStorage.setItem('userRole', 'user');
+                window.location.href = credentials.user.redirect;
+            } else if (username === credentials.admin.username && password === credentials.admin.password) {
+                sessionStorage.setItem('userRole', 'admin');
+                window.location.href = credentials.admin.redirect;
+            } else {
+                errorMessage.textContent = "Invalid username or password!";
+                errorMessage.style.display = "block";
+            }
+        }
+    </script>
+</body>
+</html>
