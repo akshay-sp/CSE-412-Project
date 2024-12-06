@@ -4,58 +4,172 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Update Phone Details</title>
-    <link rel="stylesheet" href="css/style.css">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'/>
+    <link rel="stylesheet" href="styles.css"/>
+    <style>
+        header h1 {
+            margin: 0;
+            flex-grow: 1;
+            text-align: center;
+        }
+
+        form {
+            display: flex;
+            justify-content: center;
+            max-width: 1200px;
+            width: 100%;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-sizing: border-box;
+        }
+
+        .form-section {
+            flex: 1;
+            padding: 20px;
+            border-right: 1px solid #ddd;
+            box-sizing: border-box;
+        }
+
+        .form-section:last-child {
+            border-right: none;
+        }
+
+        h2 {
+            font-size: 20px;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+        }
+
+        label {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        input, select {
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            width: 100%;
+            box-sizing: border-box;
+            margin-bottom: 15px;
+        }
+
+        input:focus, select:focus {
+            border-color: #6a1b9a;
+            outline: none;
+        }
+
+        button {
+            background: #6a1b9a;
+            color: white;
+            border: none;
+            padding: 12px;
+            font-size: 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+            margin-top: 20px;
+            width: 100%;
+        }
+
+        button:hover {
+            background: #8e44ad;
+        }
+    </style>
 </head>
 <body>
     <header>
-        <h1>Update Phone Information</h1>
+        <div class="header-left">
+            <a href="index.html" class="home-icon" title="Home">
+                <i class='bx bx-home'></i>
+            </a>
+        </div>
+        <h1>Add New Phone</h1>
+        <div class="header-right">
+            <a href="login.html" class="logout-icon" title="Log out">
+                <i class='bx bxs-log-out'></i>
+            </a>
+        </div>
     </header>
 
     <main>
-        <form action="http://localhost/project/api/updatePhone.php" method="POST">
-            <h2>Phone Information</h2>
-            <label for="brand">Brand:</label>
-            <input type="text" id="brand" name="brand" required><br>
+        <div class="main-container">
+            <form action="http://localhost/project/api/updatePhone.php" method="POST" style="display: flex; width: 100%;">
+                <div class="form-section">
+                    <h2>Phone Information</h2>
+                    <label for="brand">Brand:</label>
+                    <input type="text" id="brand" name="brand" required>
 
-            <label for="model">Model:</label>
-            <input type="text" id="model" name="model" required><br>
+                    <label for="model">Model:</label>
+                    <input type="text" id="model" name="model" required>
+                </div>
 
-            <h2>Price Information</h2>
-            <label for="price">Price:</label>
-            <input type="number" id="price" name="price" step="0.01" required><br>
+                <div class="form-section">
+                    <h2>Price Information</h2>
+                    <label for="price">Price:</label>
+                    <input type="number" id="price" name="price" step="0.01" required>
 
-            <label for="currency">Currency:</label>
-            <input type="text" id="currency" name="currency" required><br>
+                    <label for="currency">Currency:</label>
+                    <select id="currency" name="currency" required>
+                        <option value="USD">USD</option>
+                        <option value="EUR">EUR</option>
+                        <option value="INR">INR</option>
+                    </select>
+                </div>
 
-            <h2>Specifications</h2>
-            <label for="ram">RAM (GB):</label>
-            <input type="number" id="ram" name="ram" required><br>
+                <div class="form-section">
+                    <h2>Specifications</h2>
+                    <label for="ram">RAM (GB):</label>
+                    <select id="ram" name="ram" required>
+                        <option value="4GB">4 GB</option>
+                        <option value="6GB">6 GB</option>
+                        <option value="8GB">8 GB</option>
+                        <option value="12GB">12 GB</option>
+                    </select>
 
-            <label for="storage">Storage (GB):</label>
-            <input type="number" id="storage" name="storage" required><br>
+                    <label for="storage">Storage (GB):</label>
+                    <select id="storage" name="storage" required>
+                        <option value="64GB">64 GB</option>
+                        <option value="128GB">128 GB</option>
+                        <option value="256GB">256 GB</option>
+                        <option value="512GB">512 GB</option>
+                    </select>
 
-            <label for="battery">Battery (mAh):</label>
-            <input type="number" id="battery" name="battery" required><br>
+                    <label for="battery">Battery (mAh):</label>
+                    <select id="battery" name="battery" required>
+                        <option value="3000mAh">3000 mAh</option>
+                        <option value="4000mAh">4000 mAh</option>
+                        <option value="5000mAh">5000 mAh</option>
+                    </select>
 
-            <label for="display">Display (inches):</label>
-            <input type="number" id="display" name="display" step="0.1" required><br>
+                    <label for="display">Display (inches):</label>
+                    <select id="display" name="display" required>
+                        <option value="5.5 inch">5.5 inch</option>
+                        <option value="6.1 inch">6.0 inch</option>
+                        <option value="6.5 inch">6.5 inch</option>
+                        <option value="7.0 inch">7.0 inch</option>
+                    </select>
+                </div>
 
-            <h2>Vendor Information</h2>
-            <label for="vendor_name">Vendor Name:</label>
-            <input type="text" id="vendor_name" name="vendor_name" required><br>
+                <div class="form-section">
+                    <h2>Vendor Information</h2>
+                    <label for="vendor_name">Vendor Name:</label>
+                    <input type="text" id="vendor_name" name="vendor_name" required>
 
-            <label for="vendor_website">Vendor Website:</label>
-            <input type="url" id="vendor_website" name="vendor_website" required><br>
+                    <label for="vendor_website">Vendor Website:</label>
+                    <input type="url" id="vendor_website" name="vendor_website" required>
 
-            <label for="vendor_rating">Vendor Rating (1-5):</label>
-            <input type="number" id="vendor_rating" name="vendor_rating" step="0.1" min="1" max="5" required><br>
+                    <label for="vendor_rating">Vendor Rating (1-5):</label>
+                    <input type="number" id="vendor_rating" name="vendor_rating" step="0.1" min="1" max="5" required>
 
-            <button type="submit">Update Phone</button>
-        </form>
+                    <button type="submit">Add Phone</button>
+                </div>
+            </form>
+        </div>
     </main>
-
-    <footer>
-        <p>&copy; 2024 Mobile Phone Store</p>
-    </footer>
 </body>
 </html>

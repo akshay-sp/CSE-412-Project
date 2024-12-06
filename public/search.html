@@ -4,24 +4,157 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Search Phones</title>
-    <link rel="stylesheet" href="../css/style.css">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'/>
+    <link rel="stylesheet" href="styles.css"/>
+    <style>
+        header h1 {
+            margin: 0;
+            flex-grow: 1;
+            text-align: center;
+        }
+
+        #searchForm {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 20px;
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        #searchForm input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            font-size: 16px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-bottom: 10px;
+            box-sizing: border-box;
+        }
+
+        #searchForm button {
+            padding: 12px;
+            font-size: 16px;
+            width: 100%;
+            border: none;
+            border-radius: 4px;
+            background-color: #6a1b9a;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        #searchForm button:hover {
+            background-color: #8e44ad;
+        }
+
+        .filters {
+            width: 30%;
+            padding-right: 20px;
+            border-right: 2px solid #ddd;
+        }
+
+        .filters form {
+            margin-bottom: 20px;
+        }
+
+        .filters label {
+            display: inline-block;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .filters select, .filters button {
+            margin: 5px 0;
+            padding: 10px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .filters button {
+            padding: 12px;
+            font-size: 16px;
+            width: 100%;
+            border: none;
+            border-radius: 4px;
+            background-color: #6a1b9a;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .filters button:hover {
+            background: #8e44ad;
+        }
+
+        .results {
+            width: 70%;
+            padding-left: 20px;
+            overflow-y: auto;
+        }
+
+        .results div {
+            border-bottom: 1px solid #ddd;
+            padding: 10px 0;
+        }
+
+        .results div:last-child {
+            border-bottom: none;
+        }
+
+        .results h3 {
+            margin: 0 0 5px;
+        }
+
+        .results p {
+            margin: 5px 0;
+        }
+
+        #loadingSpinner {
+            text-align: center;
+            font-size: 16px;
+            color: blue;
+        }
+
+        .phone-item {
+            padding: 15px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .phone-item:last-child {
+            border-bottom: none;
+        }
+
+    </style>
 </head>
 <body>
     <header>
-        <h1>Search Phones</h1>
-
-        <nav>
-            <a href="index.html">Back to Home</a>
-        </nav>
-    </header>
+        <div class="header-left">
+            <a href="index.html" class="home-icon" title="Home">
+                <i class='bx bx-home'></i>
+            </a>
+        </div>
+        <h1>Search Results</h1>
+        <div class="header-right">
+            <a href="login.html" class="logout-icon" title="Log out">
+                <i class='bx bxs-log-out'></i>
+            </a>
+        </div>
+    </header>    
 
     <main>
-        <section>
-            <h2>Find Your Perfect Phone</h2>
-            <form id="searchForm">
-                <input type="text" id="searchQuery" placeholder="Enter brand or model">
+        <div class="filters">
+            <h2>Search for Phones</h2>
+            <form id="searchForm" onsubmit="handleSearch(event)">
+                <input type="text" id="searchQuery" placeholder="Search for phones..." required>
+                <button type="submit">Search</button>
+            </form>
+            
+            <br>
 
-                <label for="currency">Currency:</label>
+            <form id="filterForm">
+                <label for="currency">Currency: </label>
                 <select id="currency">
                     <option value="">All</option>
                     <option value="USD">USD</option>
@@ -29,68 +162,92 @@
                     <option value="INR">INR</option>
                 </select>
 
-                <label for="ram">RAM:</label>
+                <br>
+
+                <label for="ram">RAM: </label>
                 <select id="ram">
                     <option value="">All</option>
-                    <option value="4">4 GB</option>
-                    <option value="6">6 GB</option>
-                    <option value="8">8 GB</option>
-                    <option value="12">12 GB</option>
+                    <option value="4GB">4 GB</option>
+                    <option value="6GB">6 GB</option>
+                    <option value="8GB">8 GB</option>
+                    <option value="12GB">12 GB</option>
                 </select>
 
-                <label for="storage">Storage:</label>
+                <br>
+
+                <label for="storage">Storage: </label>
                 <select id="storage">
                     <option value="">All</option>
-                    <option value="64">64 GB</option>
-                    <option value="128">128 GB</option>
-                    <option value="256">256 GB</option>
+                    <option value="64GB">64 GB</option>
+                    <option value="128GB">128 GB</option>
+                    <option value="256GB">256 GB</option>
+                    <option value="512GB">512 GB</option>
                 </select>
 
-                <label for="battery">Battery:</label>
+                <br>
+
+                <label for="battery">Battery: </label>
                 <select id="battery">
                     <option value="">All</option>
-                    <option value="3000">3000 mAh</option>
-                    <option value="4000">4000 mAh</option>
-                    <option value="5000">5000 mAh</option>
+                    <option value="3000mAh">3000 mAh</option>
+                    <option value="4000mAh">4000 mAh</option>
+                    <option value="5000mAh">5000 mAh</option>
                 </select>
 
-                <label for="display">Display Size:</label>
+                <br>
+
+                <label for="display">Display Size: </label>
                 <select id="display">
                     <option value="">All</option>
-                    <option value="5.5">5.5 inch</option>
-                    <option value="6.1">6.1 inch</option>
-                    <option value="6.5">6.5 inch</option>
-                    <option value="7.0">7.0 inch</option>
+                    <option value="5.5 inch">5.5 inch</option>
+                    <option value="6.1 inch">6.1 inch</option>
+                    <option value="6.5 inch">6.5 inch</option>
+                    <option value="7.0 inch">7.0 inch</option>
                 </select>
 
-                <label for="sortBy">Sort by:</label>
+                <br>
+
+                <label for="sortBy">Sort by: </label>
                 <select id="sortBy">
                     <option value="mo_brand">Brand</option>
                     <option value="mo_model">Model</option>
                     <option value="p_price">Price</option>
-                    <option value="p_currency">Currency</option>
                 </select>
 
-                <label for="sortOrder">Order:</label>
+                <br>
+
+                <label for="sortOrder">Order: </label>
                 <select id="sortOrder">
                     <option value="asc">Ascending</option>
                     <option value="desc">Descending</option>
                 </select>
 
-                <button type="button" onclick="searchPhones()">Search</button>
+                <button type="button" onclick="fetchSearchResults()">Filter</button>
             </form>
-            <div id="loadingSpinner" style="display: none;">Searching...</div>
+        </div>
+
+        <div class="results">
+            <div id="loadingSpinner" style="display: none;">Loading...</div>
             <div id="searchResults"></div>
-        </section>
+        </div>
     </main>
 
-    <footer>
-        <p>&copy; 2024 Mobile Phone Store</p>
-    </footer>
-
     <script>
-        async function searchPhones() {
-            const query = document.getElementById('searchQuery').value.trim();
+        function getQueryParameter(name) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(name) || "";
+        }
+
+        function handleSearch(event) {
+            event.preventDefault();
+            const query = document.getElementById("searchQuery").value.trim();
+            if (query) {
+                window.location.href = `search.html?query=${encodeURIComponent(query)}`;
+            }
+        }
+
+        async function fetchSearchResults() {
+            const query = getQueryParameter("query").trim();
             const currency = document.getElementById('currency').value;
             const ram = document.getElementById('ram').value;
             const storage = document.getElementById('storage').value;
@@ -98,11 +255,12 @@
             const display = document.getElementById('display').value;
             const sortBy = document.getElementById('sortBy').value;
             const sortOrder = document.getElementById('sortOrder').value;
-            const loadingSpinner = document.getElementById('loadingSpinner');
-            const resultsDiv = document.getElementById('searchResults');
+
+            const resultsDiv = document.getElementById("searchResults");
+            const loadingSpinner = document.getElementById("loadingSpinner");
 
             if (!query) {
-                alert("Please enter a search query.");
+                resultsDiv.innerHTML = "<p>Please enter a search query.</p>";
                 return;
             }
 
@@ -123,30 +281,30 @@
                 const response = await fetch(url);
                 const phones = await response.json();
 
-                console.log("API Response:", phones);
-
                 if (phones.error) {
                     resultsDiv.innerHTML = `<p>${phones.error}</p>`;
                 } else if (phones.length === 0) {
                     resultsDiv.innerHTML = `<p>No phones found for "${query}".</p>`;
                 } else {
                     resultsDiv.innerHTML = phones.map(phone => `
-                        <div>
+                        <div class="phone-item">
                             <a href="http://localhost/project/public/phone-details.html?phoneId=${phone.mo_phoneid}">
                                 <h3>${phone.mo_brand} ${phone.mo_model}</h3>
                             </a>
-                            <p>Specs: ${phone.s_ram} RAM, ${phone.s_storage} Storage, ${phone.s_battery}, ${phone.s_display}</p>
+                            <p>Specs: ${phone.s_ram} RAM, ${phone.s_storage} storage, ${phone.s_battery} battery, ${phone.s_display} display</p>
                             <p>Price: ${phone.p_price ? phone.p_price + ' ' + phone.p_currency : 'Not Available'}</p>
                         </div>
                     `).join('');
                 }
             } catch (error) {
                 console.error("Error fetching phones:", error);
-                resultsDiv.innerHTML = `<p>An error occurred. Please try again later.</p>`;
+                resultsDiv.innerHTML = "<p>An error occurred while fetching results. Please try again later.</p>";
             } finally {
                 loadingSpinner.style.display = "none";
             }
         }
+
+        window.onload = fetchSearchResults;
     </script>
 </body>
 </html>

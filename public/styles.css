@@ -1,19 +1,57 @@
 body {
     font-family: Arial, sans-serif;
-    background-color: #f4f4f4;
     margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+    color: #333;
+}
+
+header {
+    background: linear-gradient(90deg, #6a1b9a, #8e44ad);
+    color: white;
     padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
-#search-section {
-    margin-bottom: 20px;
+header h1 {
+    margin: 0;
+    flex-grow: 1;
+    text-align: center;
 }
 
-#search-bar {
-    padding: 10px;
-    width: 300px;
+.header-left, .header-right {
+    display: flex;
+    align-items: center;
 }
 
-#search-button {
-    padding: 10px;
+.home-icon, .logout-icon {
+    font-size: 24px;
+    text-decoration: none;
+    color: white;
+    margin: 0 10px;
+}
+
+.home-icon:hover, .logout-icon:hover {
+    text-decoration: underline;
+}
+
+main {
+    display: flex;
+    padding: 20px;
+    margin: 20px auto;
+    justify-content: center;
+    background: white;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+a {
+    color: #58446c;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
 }

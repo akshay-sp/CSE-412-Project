@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Update Price</title>
+    <title>Update Vendor Details</title>
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'/>
     <link rel="stylesheet" href="styles.css"/>
     <style>
@@ -26,7 +26,7 @@
             margin-bottom: 5px;
         }
 
-        input, select {
+        input {
             padding: 10px;
             font-size: 16px;
             border: 1px solid #ddd;
@@ -60,7 +60,7 @@
                 <i class='bx bx-home'></i>
             </a>
         </div>
-        <h1>Update Price</h1>
+        <h1>Update Vendor Details</h1>
         <div class="header-right">
             <a href="login.html" class="logout-icon" title="Log out">
                 <i class='bx bxs-log-out'></i>
@@ -69,21 +69,20 @@
     </header>
     
     <div class="container">
-        <form action="http://localhost/project/api/updatePrice.php" method="POST">
-            <h2><label for="mo_phoneid">Enter Phone ID:</label></h2>
-            <input type="number" id="mo_phoneid" name="mo_phoneid" required><br>
+        <form action="http://localhost/project/api/updateVendor.php" method="POST">
+            <h2><label for="v_vendorid">Enter Vendor ID:</label></h2>
+            <input type="number" id="v_vendorId" name="v_vendorId" required><br>
 
-            <h2><label for="p_price">Enter New Price:</label></h2>
-            <input type="number" id="p_price" name="p_price" step="0.01" required><br>
+            <h2><label for="v_name">Enter Vendor Name:</label></h2>
+            <input type="text" id="v_name" name="v_name" required><br>
 
-            <h2><label for="p_currency">Update Currency:</label></h2>
-            <select id="p_currency" name="p_currency" required>
-                <option value="USD">USD</option>
-                <option value="EUR">EUR</option>
-                <option value="INR">INR</option>
-            </select><br>
+            <h2><label for="v_website">Enter Vendor Website:</label></h2>
+            <input type="url" id="v_website" name="v_website" required><br>
 
-            <button type="submit">Update Price</button>
+            <h2><label for="v_avgrating">Enter Vendor Rating:</label></h2>
+            <input type="number" id="v_avgRating" name="v_avgRating" step="0.01" min="0" max="5" required><br>
+
+            <button type="submit">Update Vendor</button>
         </form>
     </div>
 </body>

@@ -4,30 +4,154 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Price Comparison</title>
-    <link rel="stylesheet" href="../css/style.css">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'/>
+    <link rel="stylesheet" href="styles.css"/>
+    <style>
+        header h1 {
+            margin: 0;
+            flex-grow: 1;
+            text-align: center;
+        }
+
+        section {
+            width: 33.33%;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        section:first-child {
+            border-right: 2px solid #ddd;
+        }
+
+        h2 {
+            color: #6a1b9a;
+        }
+
+        ul, table {
+            width: 100%;
+            list-style-type: none;
+            padding: 0;
+        }
+
+        ul li, table td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            background-color: #f9f9f9;
+        }
+
+        ul li {
+            margin-bottom: 10px;
+            border-radius: 5px;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 20px 0;
+            background-color: #fff;
+            border-radius: 5px;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        table th, table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        table th {
+            background-color: #6a1b9a;
+            color: white;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        table tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        table tr:hover {
+            background-color: #f9f9f9;
+        }
+
+        .vendor-link {
+            color: #6a1b9a;
+            text-decoration: none;
+        }
+
+        .vendor-link:hover {
+            text-decoration: underline;
+        }
+
+        #loadingSpinner {
+            text-align: center;
+            font-size: 20px;
+            color: #6a1b9a;
+        }
+
+        button {
+            background-color: #6a1b9a;
+            color: white;
+            padding: 15px;
+            font-size: 16px;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            border-radius: 5px;
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        button:hover {
+            background-color: #8e44ad;
+        }
+
+        a {
+            color: #58446c;
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+</style>
+
+    </style>
 </head>
 <body>
     <header>
-        <h1>Price Comparison</h1>
-
-        <nav>
-            <a href="index.html">Back to Home</a>
-        </nav>
-
-    </header>
+        <div class="header-left">
+            <a href="index.html" class="home-icon" title="Home">
+                <i class='bx bx-home'></i>
+            </a>
+        </div>
+        <h1>Search Results</h1>
+        <div class="header-right">
+            <a href="login.html" class="logout-icon" title="Log out">
+                <i class='bx bxs-log-out'></i>
+            </a>
+        </div>
+    </header> 
 
     <main>
-        <section id="comparisonSection">
+        <section id="phoneDetails">
             <div id="loadingSpinner">Loading...</div>
-            <div id="phoneDetails"></div>
-            <div id="sameBrandPhones"></div>
-            <div id="similarSpecPhones"></div>
+        </section>
+
+        <section id="sameBrandPhones">
+            <h2>Phones From the Same Brand</h2>
+            <div id="sameBrandPhonesList">
+            </div>
+        </section>
+
+        <section id="similarSpecPhones">
+            <h2>Phones with the Same Specifications</h2>
+            <div id="similarSpecPhonesList">
+            </div>
         </section>
     </main>
-
-    <footer>
-        <p>&copy; 2024 Mobile Phone Store</p>
-    </footer>
 
     <script>
         async function fetchPriceComparison() {
@@ -40,37 +164,49 @@
             }
 
             const phoneDetailsDiv = document.getElementById('phoneDetails');
-            const sameBrandDiv = document.getElementById('sameBrandPhones');
-            const similarSpecDiv = document.getElementById('similarSpecPhones');
+            const sameBrandDiv = document.getElementById('sameBrandPhonesList');
+            const similarSpecDiv = document.getElementById('similarSpecPhonesList');
             const loadingSpinner = document.getElementById('loadingSpinner');
 
             try {
                 const response = await fetch(`http://localhost/project/api/getPriceComparison.php?phoneId=${encodeURIComponent(phoneId)}`);
                 const data = await response.json();
 
-                console.log("Price Comparison Data:", data);
-
                 if (data.error) {
                     phoneDetailsDiv.innerHTML = `<p>${data.error}</p>`;
                 } else {
-                    // Display the selected phone details with price and currency
-                    const phone = data.phone;
+                    const phoneDetails = data.phone;
+                    //show phone details
                     phoneDetailsDiv.innerHTML = `
-                        <h2>${phone.mo_brand} ${phone.mo_model}</h2>
+                        <h2>${phoneDetails.mo_brand} ${phoneDetails.mo_model}</h2>
+                        <h3>Specifications:</h3>
                         <ul>
-                            <li><strong>RAM:</strong> ${phone.s_ram || 'N/A'}</li>
-                            <li><strong>Storage:</strong> ${phone.s_storage || 'N/A'}</li>
-                            <li><strong>Battery:</strong> ${phone.s_battery || 'N/A'}</li>
-                            <li><strong>Display:</strong> ${phone.s_display || 'N/A'}</li>
-                            <li><strong>Price:</strong> ${phone.p_price || 'N/A'} ${phone.p_currency || 'N/A'}</li>
-                            <li><strong>Vendor:</strong> ${phone.v_name || 'N/A'} (${phone.v_avgrating || 'No rating'} stars)</li>
+                            <li><strong>RAM:</strong> ${phoneDetails.s_ram || 'N/A'}</li>
+                            <li><strong>Storage:</strong> ${phoneDetails.s_storage || 'N/A'}</li>
+                            <li><strong>Battery:</strong> ${phoneDetails.s_battery || 'N/A'}</li>
+                            <li><strong>Display:</strong> ${phoneDetails.s_display || 'N/A'}</li>
                         </ul>
+                        <br>
+                        <h3>Vendor Details:</h3>
+                        <div id="vendorList"></div>
                     `;
 
-                    // Display same-brand phones
+                    //show vendor information
+                    const vendorListDiv = document.getElementById('vendorList');
+                    if (phoneDetails.v_name) {
+                        vendorListDiv.innerHTML = `
+                            <ul>
+                                <li><strong>Vendor Name:</strong> ${phoneDetails.v_name}</li>
+                                <li><strong>Price:</strong> ${phoneDetails.p_price} ${phoneDetails.p_currency}</li>
+                                <li><strong>Average Rating:</strong> ${phoneDetails.v_avgrating}</li>
+                                <li><strong>Website:</strong> <a href="${phoneDetails.v_website}" target="_blank">${phoneDetails.v_website}</a></li>
+                            </ul>
+                        `;
+                    }
+
+                    //display same-brand phones
                     if (data.sameBrandPhones.length > 0) {
                         sameBrandDiv.innerHTML = `
-                            <h2>Phones From the Same Brand</h2>
                             <table>
                                 <thead>
                                     <tr>
@@ -102,10 +238,9 @@
                         sameBrandDiv.innerHTML = `<p>No other phones found from the same brand.</p>`;
                     }
 
-                    // Display phones with similar specifications
+                    //display phones with similar specifications
                     if (data.similarSpecPhones.length > 0) {
                         similarSpecDiv.innerHTML = `
-                            <h2>Phones with Similar Specifications</h2>
                             <table>
                                 <thead>
                                     <tr>
@@ -147,7 +282,6 @@
             }
         }
 
-        // Fetch comparison details on page load
         fetchPriceComparison();
     </script>
 </body>

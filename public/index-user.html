@@ -3,32 +3,197 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mobile Phone Store - User</title>
-    <link rel="stylesheet" href="css/style.css"> <!-- Link to your CSS -->
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'/>
+    <link rel="stylesheet" href="styles.css"/>
+    <title>Mobile Phone Store - Home</title>
+    <style>
+        header h1 {
+            margin: 0;
+            flex-grow: 1;
+            text-align: center;
+        }
+        
+        .search-section {
+            width: 30%;
+            padding: 20px;
+            border-right: 2px solid #ddd;
+        }
+
+        .phone-list-section {
+            width: 35%;
+            padding: 20px;
+            border-right: 2px solid #ddd;
+        }
+
+        .vendor-list-section {
+            width: 35%;
+            padding: 20px;
+            border-right: 2px;
+        }
+
+        .search-bar {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 20px;
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .search-bar input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            font-size: 16px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            outline: none;
+            margin-bottom: 10px;
+            box-sizing: border-box;
+        }
+
+        .search-bar button {
+            padding: 12px;
+            font-size: 16px;
+            width: 100%;
+            border: none;
+            border-radius: 4px;
+            background-color: #6a1b9a;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .search-bar button:hover {
+            background-color: #8e44ad;
+        }
+
+
+        .phone-item {
+            padding: 15px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .phone-item:last-child {
+            border-bottom: none;
+        }
+
+        .vendor-item {
+            padding: 15px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .vendor-item:last-child {
+            border-bottom: none;
+        }
+    </style>
 </head>
 <body>
     <header>
-        <div class="container">
-            <h1>Mobile Phone Store</h1>
-            <p>Your one-stop platform for mobile phones and price comparison!</p>
+        <h1>Home</h1>
+        <div class="header-right">
+            <a href="login.html" class="logout-icon" title="Log out">
+                <i class='bx bxs-log-out'></i>
+            </a>
         </div>
-    </header>
-
-    <nav>
-        <ul class="nav-links">
-            <li><a href="search.html">Search Phones</a></li>
-        </ul>
-    </nav>
+    </header> 
 
     <main>
-        <section>
-            <h2>Welcome to Mobile Phone Store</h2>
-            <p>Explore mobile phones and compare prices from various vendors.</p>
+        <section class="search-section">
+            <h2>Search for Phones</h2>
+            <form id="searchForm" class="search-bar" onsubmit="handleSearch(event)">
+                <input type="text" id="searchQuery" placeholder="Search for phones..." required>
+                <button type="submit">Search</button>
+            </form>
+        </section>
+
+        <section class="phone-list-section">
+            <h2>Newest Phones</h2>
+            <div class="phone-list" id="phoneList"></div>
+        </section>
+
+        <section class="vendor-list-section">
+            <h2>Top Rated Vendors</h2>
+            <div class="vendor-list" id="vendorList"></div>
         </section>
     </main>
 
-    <footer>
-        <p>&copy; 2024 Mobile Phone Store</p>
-    </footer>
+    <script>
+        function handleSearch(event) {
+            event.preventDefault();
+            const query = document.getElementById("searchQuery").value.trim();
+            if (query) {
+                window.location.href = `search.html?query=${encodeURIComponent(query)}`;
+            }
+        }
+
+        async function fetchNewestPhones() {
+            try {
+                const response = await fetch('/project/api/getNewPhones.php');
+                const phones = await response.json();
+                const phoneListDiv = document.getElementById('phoneList');
+
+                if (phones.length === 0) {
+                    phoneListDiv.innerHTML = `<p>No phones found.</p>`;
+                    return;
+                }
+
+                phoneListDiv.innerHTML = phones.slice(0, 15).map(phone => {
+                    const lastUpdated = new Date(phone.lastupdateddate);
+                    const formattedDate = isNaN(lastUpdated) 
+                        ? 'Invalid Date' 
+                        : lastUpdated.toLocaleDateString('en-US', {
+                            weekday: 'short',
+                            year: 'numeric',
+                            month: 'short',
+                            day: 'numeric',
+                        });
+
+                    return `
+                        <div class="phone-item">
+                            <a href="phone-details.html?phoneId=${phone.phoneid}">
+                                ${phone.brand} ${phone.model}
+                            </a>
+                            <p>Last Updated: ${formattedDate}</p>
+                            <p>Specs: ${phone.ram} RAM, ${phone.storage} storage, ${phone.battery} battery, ${phone.display} display</p>
+                            <p>Price: ${phone.price} ${phone.currency}</p>
+                        </div>
+                    `;
+                }).join('');
+            } catch (error) {
+                console.error('Error fetching newest phones:', error);
+            }
+        }
+
+        async function fetchTopVendors() {
+            try {
+                const response = await fetch('/project/api/getTopVendors.php');
+                const vendors = await response.json();
+                const vendorListDiv = document.getElementById('vendorList');
+
+                if (vendors.length === 0) {
+                    vendorListDiv.innerHTML = `<p>No top vendors found.</p>`;
+                    return;
+                }
+
+                vendorListDiv.innerHTML = vendors.map(vendor => {
+                    return `
+                        <div class="phone-item">
+                            <a href="phone-details.html?phoneId=${vendor.vendorid}">${vendor.phonebrand} ${vendor.phonemodel}</a>
+                            <p>Vendor: ${vendor.vendorname}</p>
+                            <p>Website: <a href="${vendor.vendorwebsite}" target="_blank">${vendor.vendorwebsite}</a></p>
+                            <p>Rating: ${vendor.avgrating}</p>
+                        </div>
+                    `;
+                }).join('');
+            } catch (error) {
+                console.error('Error fetching top vendors:', error);
+            }
+        }
+
+        // Fetch data on page load
+        fetchNewestPhones();
+        fetchTopVendors();
+    </script>
 </body>
 </html>

@@ -4,13 +4,87 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            margin: 0;
+        }
+
+        main {
+            background: white;
+            color: #333;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            padding: 40px;
+            width: 100%;
+            max-width: 400px;
+            box-sizing: border-box;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        form label {
+            font-weight: bold;
+        }
+
+        form input {
+            padding: 10px;
+            font-size: 1rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        form input:focus {
+            border-color: #8e44ad;
+            outline: none;
+        }
+
+        button {
+            padding: 10px;
+            font-size: 1rem;
+            background: #6a1b9a;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background: #8e44ad;
+        }
+
+        #errorMessage {
+            color: red;
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #6a1b9a, #8e44ad);
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+    </style>
+    
 </head>
 <body>
-    <header>
-        <h1>Login Page</h1>
-    </header>
-
     <main>
         <form id="loginForm" onsubmit="return false;">
             <div>
@@ -23,26 +97,20 @@
             </div>
             <button type="button" onclick="handleLogin()">Login</button>
         </form>
-        <div id="errorMessage" style="color: red; display: none;"></div>
+        <div id="errorMessage" style="display: none;"></div>
     </main>
-
-    <footer>
-        <p>&copy; 2024 Mobile Phone Store</p>
-    </footer>
 
     <script>
         function handleLogin() {
-            // Hardcoded credentials
             const credentials = {
-                user: { username: "user123", password: "password123", redirect: "index.html" },
-                admin: { username: "admin123", password: "adminpass123", redirect: "index.html" }
+                user: { username: "user", password: "user123", redirect: "index.html" },
+                admin: { username: "admin", password: "admin123", redirect: "index.html" }
             };
 
             const username = document.getElementById('username').value.trim();
             const password = document.getElementById('password').value.trim();
             const errorMessage = document.getElementById('errorMessage');
 
-            // Clear any previous error message
             errorMessage.style.display = "none";
 
             // Validate credentials and set sessionStorage

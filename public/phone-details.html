@@ -4,28 +4,137 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Phone Details</title>
-    <link rel="stylesheet" href="../css/style.css">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'/>
+    <link rel="stylesheet" href="styles.css"/>
+    <style>
+        header h1 {
+            margin: 0;
+            flex-grow: 1;
+            text-align: center;
+        }
+
+        #phoneDetailsSection, #otherPhonesSection {
+            width: 50%;
+            padding: 20px;
+        }
+
+        #phoneDetailsSection {
+            border-right: 2px solid #ddd;
+        }
+
+        h2 {
+            color: #6a1b9a;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        ul li {
+            margin: 10px 0;
+            padding: 10px;
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        #vendorList {
+            margin-top: 20px;
+        }
+
+        .vendor {
+            padding: 10px;
+            background: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+
+        .vendor p {
+            margin: 5px 0;
+        }
+
+        .vendor a {
+            color: #6a1b9a;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .vendor a:hover {
+            text-decoration: underline;
+        }
+
+        button {
+            background-color: #6a1b9a;
+            color: white;
+            padding: 15px;
+            font-size: 16px;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            border-radius: 5px;
+            display: block;
+            width: 100%;
+            margin: 20px 0 0;
+        }
+
+        button:hover {
+            background-color: #8e44ad;
+        }
+
+        #otherPhonesSection h3 {
+            margin-bottom: 15px;
+        }
+
+        .phone-item {
+            padding: 15px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .phone-item:last-child {
+            border-bottom: none;
+        }
+
+        .phone-item a {
+            color: #58446c;
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+        .phone-item a:hover {
+            text-decoration: underline;
+        }
+    </style>
 </head>
 <body>
     <header>
-        <h1>Phone Details</h1>
-
-        <nav>
-            <a href="index.html">Back to Home</a>
-        </nav>
-        
-    </header>
+        <div class="header-left">
+            <a href="index.html" class="home-icon" title="Home">
+                <i class='bx bx-home'></i>
+            </a>
+        </div>
+        <h1>Search Results</h1>
+        <div class="header-right">
+            <a href="login.html" class="logout-icon" title="Log out">
+                <i class='bx bxs-log-out'></i>
+            </a>
+        </div>
+    </header>  
 
     <main>
         <section id="phoneDetailsSection">
             <div id="loadingSpinner">Loading...</div>
             <div id="phoneDetails"></div>
         </section>
-    </main>
 
-    <footer>
-        <p>&copy; 2024 Mobile Phone Store</p>
-    </footer>
+        <section id="otherPhonesSection">
+            <h2>Other Phones from this Vendor</h2>
+            <div id="otherPhonesList">
+                <p>Coming soon...</p>
+            </div>
+        </section>
+    </main>
 
     <script>
         async function fetchPhoneDetails() {
@@ -41,39 +150,41 @@
             const loadingSpinner = document.getElementById('loadingSpinner');
 
             try {
-                const response = await fetch(`http://localhost/project/api/getPhoneDetails.php?phoneId=${encodeURIComponent(phoneId)}`);
+                const response = await fetch(`/project/api/getPhoneDetails.php?phoneId=${encodeURIComponent(phoneId)}`);
                 const phoneDetails = await response.json();
-
-                console.log("Phone Details Response:", phoneDetails);
 
                 if (phoneDetails.error) {
                     phoneDetailsDiv.innerHTML = `<p>${phoneDetails.error}</p>`;
                 } else {
-                    // Render phone details
+                    //show phone details
                     phoneDetailsDiv.innerHTML = `
                         <h2>${phoneDetails.mo_brand} ${phoneDetails.mo_model}</h2>
                         <h3>Specifications:</h3>
                         <ul>
-                            <li>RAM: ${phoneDetails.s_ram || 'N/A'}</li>
-                            <li>Storage: ${phoneDetails.s_storage || 'N/A'}</li>
-                            <li>Battery: ${phoneDetails.s_battery || 'N/A'}</li>
-                            <li>Display: ${phoneDetails.s_display || 'N/A'}</li>
+                            <li><strong>RAM:</strong> ${phoneDetails.s_ram || 'N/A'}</li>
+                            <li><strong>Storage:</strong> ${phoneDetails.s_storage || 'N/A'}</li>
+                            <li><strong>Battery:</strong> ${phoneDetails.s_battery || 'N/A'}</li>
+                            <li><strong>Display:</strong> ${phoneDetails.s_display || 'N/A'}</li>
                         </ul>
+                        <br>
                         <h3>Vendor Details:</h3>
                         <div id="vendorList"></div>
-                        <button onclick="redirectToPriceComparison(${phoneId})">Compare Prices</button>
+                        <button onclick="redirectToPriceComparison(${phoneId})">Compare with other Products</button>
                     `;
 
-                    // Render vendor information
+                    //show vendor information
                     const vendorListDiv = document.getElementById('vendorList');
-                    if (phoneDetails.v_name) { // Assuming only one vendor per phone in this API
+                    if (phoneDetails.v_name) {
                         vendorListDiv.innerHTML = `
-                            <div>
-                                <p><strong>${phoneDetails.v_name}</strong></p>
-                                <p>Price: ${phoneDetails.p_price} ${phoneDetails.p_currency}</p>
-                                <p>Average Rating: ${phoneDetails.v_avgrating}</p>
-                            </div>
+                            <ul>
+                                <li><strong>Vendor Name:</strong> ${phoneDetails.v_name}</li>
+                                <li><strong>Price:</strong> ${phoneDetails.p_price} ${phoneDetails.p_currency}</li>
+                                <li><strong>Average Rating:</strong> ${phoneDetails.v_avgrating}</li>
+                                <li><strong>Website:</strong> <a href="${phoneDetails.v_website}" target="_blank">${phoneDetails.v_website}</a></li>
+                            </ul>
                         `;
+
+                        fetchOtherPhones(phoneId, phoneDetails.v_name);
                     } else {
                         vendorListDiv.innerHTML = `<p>No vendors available.</p>`;
                     }
@@ -86,12 +197,62 @@
             }
         }
 
+        async function fetchOtherPhones(phoneId, vendorName) {
+            const otherPhonesListDiv = document.getElementById('otherPhonesList');
+
+            if (!phoneId || !vendorName) {
+                console.error("Error: Missing phoneId or vendorName.");
+                otherPhonesListDiv.innerHTML = `<p>Unable to load other phones.</p>`;
+                return;
+            }
+
+            try {
+                //construct the URL with both phoneId and vendorName
+                const url = `/project/api/getPhonesVendor.php?phoneId=${encodeURIComponent(phoneId)}&vendorName=${encodeURIComponent(vendorName)}`;
+
+                const response = await fetch(url);
+                const data = await response.json();
+
+                //check if phones data exists and display it
+                if (data.phones && data.phones.length > 0) {
+                    const phoneListHtml = data.phones.slice(0, 15).map(phone => {
+                        const lastUpdated = new Date(phone.lastupdateddate);
+                        const formattedDate = isNaN(lastUpdated) 
+                            ? 'Invalid Date' 
+                            : lastUpdated.toLocaleDateString('en-US', {
+                                weekday: 'short',
+                                year: 'numeric',
+                                month: 'short',
+                                day: 'numeric',
+                            });
+
+                        return `
+                            <div class="phone-item">
+                                <a href="phone-details.html?phoneId=${phone.phoneid}">
+                                    ${phone.brand} ${phone.model}
+                                </a>
+                                <p>Specs: RAM ${phone.ram || 'N/A'}, Storage ${phone.storage || 'N/A'}, Battery ${phone.battery || 'N/A'}</p>
+                                <p>Price: ${phone.price} ${phone.currency}</p>
+                            </div>
+                        `;
+                    }).join('');
+                    otherPhonesListDiv.innerHTML = phoneListHtml;
+                } else {
+                    otherPhonesListDiv.innerHTML = `<p>No other phones available from this vendor.</p>`;
+                }
+            } catch (error) {
+                console.error("Error fetching other phones:", error);
+                otherPhonesListDiv.innerHTML = `<p>Unable to load other phones. Please try again later.</p>`;
+            }
+        }
+
+
         function redirectToPriceComparison(phoneId) {
             window.location.href = `price-comparison.html?phoneId=${phoneId}`;
         }
 
-        // Fetch phone details on page load
         fetchPhoneDetails();
+        fetchOtherPhones();
     </script>
 </body>
 </html>

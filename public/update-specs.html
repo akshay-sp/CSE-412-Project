@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Update Price</title>
+    <title>Update Specifications</title>
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'/>
     <link rel="stylesheet" href="styles.css"/>
     <style>
@@ -60,7 +60,7 @@
                 <i class='bx bx-home'></i>
             </a>
         </div>
-        <h1>Update Price</h1>
+        <h1>Update Specifications</h1>
         <div class="header-right">
             <a href="login.html" class="logout-icon" title="Log out">
                 <i class='bx bxs-log-out'></i>
@@ -69,21 +69,42 @@
     </header>
     
     <div class="container">
-        <form action="http://localhost/project/api/updatePrice.php" method="POST">
+        <form action="http://localhost/project/api/updateSpecs.php" method="POST">
             <h2><label for="mo_phoneid">Enter Phone ID:</label></h2>
             <input type="number" id="mo_phoneid" name="mo_phoneid" required><br>
 
-            <h2><label for="p_price">Enter New Price:</label></h2>
-            <input type="number" id="p_price" name="p_price" step="0.01" required><br>
+            <h2><label for="s_ram">Enter RAM:</label></h2>
+            <select id="s_ram" name="s_ram" required>
+                <option value="4GB">4 GB</option>
+                <option value="6GB">6 GB</option>
+                <option value="8GB">8 GB</option>
+                <option value="12GB">12 GB</option>
+            </select>
 
-            <h2><label for="p_currency">Update Currency:</label></h2>
-            <select id="p_currency" name="p_currency" required>
-                <option value="USD">USD</option>
-                <option value="EUR">EUR</option>
-                <option value="INR">INR</option>
-            </select><br>
+            <h2><label for="s_storage">Enter Storage:</label></h2>
+            <select id="s_storage" name="s_storage" required>
+                <option value="64GB">64 GB</option>
+                <option value="128GB">128 GB</option>
+                <option value="256GB">256 GB</option>
+                <option value="512GB">512 GB</option>
+            </select>
 
-            <button type="submit">Update Price</button>
+            <h2><label for="s_battery">Enter Battery:</label></h2>
+            <select id="s_battery" name="s_battery" required>
+                <option value="3000mAh">3000 mAh</option>
+                <option value="4000mAh">4000 mAh</option>
+                <option value="5000mAh">5000 mAh</option>
+            </select>
+
+            <h2><label for="s_display">Enter Display:</label></h2>
+            <select id="s_display" name="s_display" required>
+                <option value="5.5 inch">5.5 inch</option>
+                <option value="6.0 inch">6.0 inch</option>
+                <option value="6.5 inch">6.5 inch</option>
+                <option value="7.0 inch">7.0 inch</option>
+            </select>
+
+            <button type="submit">Update Specifications</button>
         </form>
     </div>
 </body>
